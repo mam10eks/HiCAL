@@ -159,17 +159,7 @@
                 </div>
             </div>
 
-            <div class="card small-shadow"  style="border-color: #EFAC57">
-                <div class="card-block">
-                    <h2 class="text-warning">Create new topic </h2>
-                    <hr>
-                    <form method="POST">
-                        {% csrf_token %}
-                        {% crispy form_topic %}
-                    </form>
-                </div>
-            </div>
-
+            
         </div>
     </div>
 {% endblock %}

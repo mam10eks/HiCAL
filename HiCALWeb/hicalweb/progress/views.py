@@ -69,9 +69,13 @@ class Home(views.LoginRequiredMixin, generic.TemplateView):
                           'Choose a platform from the left sidebar to start judging.'
         if 'submit-task-form' in request.POST:
             form = TaskForm(request.POST)
+
             if form.is_valid():
                 f = form.save(commit=False)
                 f.username = request.user
+                f.max_number_of_judgments = 0
+                f.strategy = 'doc'
+                f.show_full_document_content = True
                 f.save()
                 self.request.user.current_task = form.instance
                 self.request.user.save()

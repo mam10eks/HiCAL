@@ -73,3 +73,10 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 # Your local stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+
+DATABASES['default'] = {
+    'HOST': '127.0.0.1',
+    'USER': 'postgres',
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': 'hicalweb'
+}

@@ -2,3 +2,4 @@
 *.log
 pip-log.txt
 npm-debug.log*
+__pycache__/

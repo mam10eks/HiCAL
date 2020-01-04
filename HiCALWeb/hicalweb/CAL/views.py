@@ -8,6 +8,7 @@ from interfaces.DocumentSnippetEngine import functions as DocEngine
 
 from hicalweb.CAL.exceptions import CALError
 from hicalweb.interfaces.CAL import functions as CALFunctions
+from hicalweb.interfaces.Crypsor.functions import get_documents as crypsor_get_documents
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +70,7 @@ class DocAJAXView(views.CsrfExemptMixin, views.LoginRequiredMixin,
         session = self.request.user.current_task.uuid
         seed_query = self.request.user.current_task.topic.seed_query
         try:
+            return self.render_json_response(crypsor_get_documents(seed_query))
             docs_ids_to_judge = CALFunctions.get_documents(str(session), 5,
                                                            seed_query)
             if not docs_ids_to_judge:

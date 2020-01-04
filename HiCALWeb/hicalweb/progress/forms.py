@@ -16,7 +16,7 @@ class TaskForm(forms.ModelForm):
 
     class Meta:
         model = Task
-        exclude = ["username", "setting", "timespent", "last_activity"]
+        exclude = ["username", "setting", "timespent", "last_activity", "max_number_of_judgments", "strategy", "show_full_document_content"]
         help_texts = {
             'max_number_of_judgments': 'Max number of judgments (effort) for this task. '
                                        'Enter 0 or negative number to '
