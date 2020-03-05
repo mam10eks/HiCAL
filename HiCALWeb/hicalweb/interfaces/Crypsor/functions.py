@@ -15,10 +15,10 @@ def __normalize_url(url):
     return url.replace(':', '.').replace('/', '.')
 
 def __url_dir(query, url):
-    return __query_dir(query) + normalize_url(url) + '/'
+    return __query_dir(query) + __normalize_url(url) + '/'
 
 def __static_url_image(query, url):
-    return __static_query_dir(query) + normalize_url(url) + '/script/page.png'
+    return '/static/' + __static_query_dir(query).split('/static/')[1] + __normalize_url(url) + '/script/page.png'
 
 def __documents_for_query(query):
     with open(__query_dir(query) + 'queries.txt', 'r') as f:
@@ -35,8 +35,8 @@ def __url_to_document(query, url):
     return {
         'doc_id': url,
         'title': doc.title.text if doc and doc.title else url,
-        'content': html2text(str(doc)),
-        'doc_image': __static_url_image(query, url),
+        'content': '',#html2text(str(doc)),
+        'doc_image': '<img src="' + __static_url_image(query, url) + '" width="100%">',
         'date': '',
         'snippet': '',
     }

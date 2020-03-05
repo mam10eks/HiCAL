@@ -92,6 +92,7 @@
 
                         {% endif %}
                         <div id="document_content"></div>
+                        <div id="document_image"></div>
                     </div>
                 </div>
             </div>
@@ -221,6 +222,7 @@
         var show_full_doc_button_clicked = false;
         if(toggle_full_doc){
             $("#document_content").hide();
+            $("#document_image").hide();
             time_on_paragraph = 0;
             show_full_doc_button_clicked = false;
         }
@@ -230,6 +232,7 @@
             $("#show_full_doc_button").show();
             // hide full document
             $("#document_content").hide();
+            $("#document_image").hide();
             // rest time on paragraph
             time_on_paragraph = 0;
             // rest boolean
@@ -241,6 +244,7 @@
             $("#show_full_doc_button").hide();
             // show full document
             $("#document_content").show();
+            $("#document_image").show();
             var now = + new Date();
             var current_doc_snippet = $("#document_snippet").html();
             var current_doc_title = $("#document_title").html();
@@ -294,7 +298,8 @@
                                 next_doc["title"],
                                 next_doc["date"],
                                 next_doc["snippet"],
-                                next_doc["content"]
+                                next_doc["content"],
+                                next_doc["doc_image"]
                         );
 
                     }
@@ -304,6 +309,7 @@
                             "<span class='text-danger'>Server returned empty list.</span>",
                             "",
                             "Something went wrong.. Please contact the study coordinators.",
+                            "",
                             ""
                         );
                 }
@@ -314,6 +320,7 @@
                     "<span class='text-danger'>Failed to retrieve...</span>",
                     "",
                     "<code>" + result['status'] + " " +result['statusText'] + "</code>",
+                    "",
                     "");
                 }
                 console.error("Error occurred: " + JSON.stringify(result));
@@ -325,6 +332,7 @@
                         "<span class='text-danger'>Failed to retrieve docs..</sapn>",
                         "",
                         "<code>" + xhr.responseText + "</code>",
+                        "",
                         "");
                     }
                     console.error("Failed to get documents. Error message: "+xhr.responseText);
@@ -348,17 +356,19 @@
         });
 
 
-        function updateDocument(id, title, date, snippet, content){
+        function updateDocument(id, title, date, snippet, content, imageUrl){
             console.log("Updating document view for document id: " + id);
             $('#cal-document').attr("data-doc-id", id).data("doc-id", id);
-            $("#document_id").html(id);
+            $("#document_id").html("<a href='" + id + "'>"+ id +"</a>");
             $("#document_title").html(title);
             $("#document_title").removeClass();
             $("#document_date").html(date);
             $("#document_snippet").html(snippet);
             $("#document_content").html(content);
+            $("#document_image").html(imageUrl);
 
             $( "#document_content" ).trigger( "updated" );
+            $( "#document_image" ).trigger( "updated" );
             window.scrollTo(0, 0);
 
             if(id){
@@ -509,6 +519,7 @@
                                     "",
                                     "CAL has not returned a new " +
                                     "set of documents to return. Please try refreshing.",
+                                    "",
                                     ""
                             );
                         }else{
@@ -527,7 +538,8 @@
                                         next_doc["title"],
                                         next_doc["date"],
                                         next_doc["snippet"],
-                                        next_doc["content"]
+                                        next_doc["content"],
+                                        next_doc["doc_image"]
                                 );
                             }
 
@@ -543,6 +555,7 @@
                         "<span class='text-danger'>Something went wrong..</sapn>",
                         "",
                         result['message'],
+                        "",
                         "");
                     }
 
@@ -556,6 +569,7 @@
                             "<span class='text-danger'>Something went wrong..</sapn>",
                             "",
                             xhr.responseText,
+                            "",
                             "");
                         }
                         console.log("Something went wrong. Timeout error." +
@@ -581,7 +595,8 @@
                         next_doc["title"],
                         next_doc["date"],
                         next_doc["snippet"],
-                        next_doc["content"]
+                        next_doc["content"],
+                        next_doc["doc_image"]
                 );
 
             }else{
@@ -590,6 +605,7 @@
                         "<span class='text-danger'>Please wait..</span>",
                         "",
                         "The queue is empty.",
+                        "",
                         "");
             }
 
@@ -633,6 +649,7 @@
         $('#cal-document').attr("data-doc-id", doc["doc_id"]).data("doc-id", doc["doc_id"]);
         $("#document_title").text(doc["title"]);
         $("#document_content").html(doc["snippet"]);
+        $("#document_image").html(doc["doc_image"]);
     }
 
     function reset_doc_view(){
@@ -640,6 +657,7 @@
         $("#document_title").text("");
         $("#document_title").removeClass();
         $("#document_content").text("");
+        $("#document_image").text("");
     }
 
 
@@ -685,6 +703,7 @@
         }
         var doc_snippet = doc['doc_CAL_snippet'];
         var doc_content = doc['doc_content'];
+        var doc_image = doc['doc_image'];
         if (doc_content == ""){
             doc_content = "<div class='container center-text'> <span class='text-danger'> <h4><i class='fas fa-sync fa-spin mr-4'></i></h4> <h5>Fetching document content. Please wait..</h5> </span> </div>"
         }
@@ -716,7 +735,8 @@
             doc_title,
             doc_date,
             doc_snippet,
-            doc_content
+            doc_content,
+            doc_image
         );
 
         $('#document_title').removeClass();
@@ -735,7 +755,8 @@
                         doc_title,
                         result[0]['date'],
                         doc_snippet,
-                        result[0]['content']
+                        result[0]['content'],
+                        doc_image
                     );
 
                     // update instance so that we don't make another call.
@@ -748,6 +769,7 @@
                         "<span class='text-danger'>Something went wrong..</sapn>",
                         "",
                         result['message'],
+                        "",
                         "");
                     }
 
@@ -761,6 +783,7 @@
                             "<span class='text-danger'>Something went wrong..</sapn>",
                             "",
                             xhr.responseText,
+                            "",
                             "");
                         }
                         console.error("Something went wrong. Timeout error." +
