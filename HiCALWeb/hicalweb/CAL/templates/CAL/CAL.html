@@ -359,7 +359,7 @@
         function updateDocument(id, title, date, snippet, content, imageUrl){
             console.log("Updating document view for document id: " + id);
             $('#cal-document').attr("data-doc-id", id).data("doc-id", id);
-            $("#document_id").html("<a href='" + id + "'>"+ id +"</a>");
+            $("#document_id").html(id);
             $("#document_title").html(title);
             $("#document_title").removeClass();
             $("#document_date").html(date);
@@ -648,7 +648,7 @@
     function show_doc_view(doc){
         $('#cal-document').attr("data-doc-id", doc["doc_id"]).data("doc-id", doc["doc_id"]);
         $("#document_title").text(doc["title"]);
-        $("#document_content").html(doc["snippet"]);
+        $("#document_content").html(doc["content"]);
         $("#document_image").html(doc["doc_image"]);
     }
 

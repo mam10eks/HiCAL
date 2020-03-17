@@ -10,6 +10,7 @@ import httplib2
 from hicalweb.interfaces.DocumentSnippetEngine import functions as DocEngine
 from hicalweb.interfaces.SearchEngine import functions as SearchEngine
 from hicalweb.search import helpers
+from hicalweb.interfaces.Touche.functions import get_document
 
 logger = logging.getLogger(__name__)
 
@@ -163,7 +164,7 @@ class SearchGetDocAJAXView(views.CsrfExemptMixin, views.LoginRequiredMixin,
         if not docid:
             return self.render_json_response([])
         try:
-            document = DocEngine.get_documents([docid])
+            document = get_document(docid)
         except TimeoutError:
             error_dict = {u"message": u"Timeout error. Please check status of servers."}
             return self.render_timeout_request_response(error_dict)

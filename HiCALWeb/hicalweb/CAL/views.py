@@ -8,7 +8,7 @@ from interfaces.DocumentSnippetEngine import functions as DocEngine
 
 from hicalweb.CAL.exceptions import CALError
 from hicalweb.interfaces.CAL import functions as CALFunctions
-from hicalweb.interfaces.Crypsor.functions import get_documents as crypsor_get_documents
+from hicalweb.interfaces.Touche.functions import get_documents
 
 logger = logging.getLogger(__name__)
 
@@ -68,29 +68,9 @@ class DocAJAXView(views.CsrfExemptMixin, views.LoginRequiredMixin,
 
     def get_ajax(self, request, *args, **kwargs):
         session = self.request.user.current_task.uuid
-        seed_query = self.request.user.current_task.topic.seed_query
+        topic = self.request.user.current_task.topic
         try:
-            return self.render_json_response(crypsor_get_documents(seed_query))
-            docs_ids_to_judge = CALFunctions.get_documents(str(session), 5,
-                                                           seed_query)
-            if not docs_ids_to_judge:
-                return self.render_json_response([])
-
-            doc_ids_hack = []
-            for doc_id in docs_ids_to_judge:
-                doc = {'doc_id': doc_id}
-                if '.' in doc_id:
-                    doc['doc_id'], doc['para_id'] = doc_id.split('.')
-                doc_ids_hack.append(doc)
-
-            if self.request.user.current_task.strategy == 'doc':
-                documents = DocEngine.get_documents(docs_ids_to_judge,
-                                                    self.request.user.current_task.topic.seed_query)
-            else:
-                documents = DocEngine.get_documents_with_snippet(doc_ids_hack,
-                                                    self.request.user.current_task.topic.seed_query)
-
-            return self.render_json_response(documents)
+            return self.render_json_response(get_documents(topic))
         except TimeoutError:
             error_dict = {u"message": u"Timeout error. Please check status of servers."}
             return self.render_timeout_request_response(error_dict)
@@ -99,3 +79,4 @@ class DocAJAXView(views.CsrfExemptMixin, views.LoginRequiredMixin,
 
             # TODO: add proper http response for CAL errors
             return self.render_timeout_request_response(error_dict)
+

@@ -13,6 +13,7 @@ from interfaces.DocumentSnippetEngine import functions as DocEngine
 from hicalweb.CAL.exceptions import CALError
 from hicalweb.interfaces.CAL import functions as CALFunctions
 from hicalweb.judgment.models import Judgement
+from hicalweb.interfaces.Touche.functions import get_documents
 
 logger = logging.getLogger(__name__)
 
@@ -119,45 +120,13 @@ class JudgmentAJAXView(views.CsrfExemptMixin, views.LoginRequiredMixin,
                 found_ctrl_f_terms_in_full_doc=found_ctrl_f_terms_in_full_doc
             )
 
-
-
-
         context = {u"message": u"Your judgment on {} has been received!".format(doc_id)}
         context[u"is_max_judged_reached"] = False
         error_message = None
 
         if isFromCAL:
-            context[u"next_docs"] = []
-            # mark relevant documents as `relevant` only to CAL.
-            rel = 1 if relevant else -1 if nonrelevant else 1
             try:
-                next_patch = CALFunctions.send_judgment(
-                    self.request.user.current_task.uuid,
-                    doc_id,
-                    rel)
-                if not next_patch:
-                    return self.render_json_response(context)
-
-                doc_ids_hack = []
-                for doc_id in next_patch:
-                    doc = {'doc_id': doc_id}
-                    if '.' in doc_id:
-                        doc['doc_id'], doc['para_id'] = doc_id.split('.')
-                    doc_ids_hack.append(doc)
-
-                if self.request.user.current_task.strategy == 'doc':
-                    documents = DocEngine.get_documents(next_patch,
-                                                        self.request.user.current_task.topic.seed_query)
-                else:
-                    documents = DocEngine.get_documents_with_snippet(doc_ids_hack,
-                                                        self.request.user.current_task.topic.seed_query)
-                context[u"next_docs"] = documents
-            except TimeoutError:
-                error_dict = {u"message": u"Timeout error. "
-                                          u"Please check status of servers."}
-                return self.render_timeout_request_response(error_dict)
-            except CALError as e:
-                error_message = "CAL Exception: {}".format(str(e))
+                context[u"next_docs"] = get_documents(self.request.user.current_task.topic)
             except Exception as e:
                 error_message = str(e)
 
