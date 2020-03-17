@@ -13,7 +13,7 @@ docker-set-up-db:
 	echo "CREATE DATABASE hicalweb;"| psql -h localhost -U postgres &&\
 	$(DJANGO_CMD) ./manage.py makemigrations &&\
 	$(DJANGO_CMD) ./manage.py migrate &&\
-	../../create-topics.sh
+	../../../create-topics.sh
 
 docker-run-postgres-local:
 	docker run --rm -ti --net=host hical-postgres:0.0.1
